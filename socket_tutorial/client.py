@@ -25,8 +25,8 @@ def main():
 
 	while True:
 
-		if test1.rcv_msg():
-			test1.rcv_msg()
+		# if test1.rcv_msg():
+		# 	test1.rcv_msg()
 		
 		message = input()
 
