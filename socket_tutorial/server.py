@@ -4,13 +4,13 @@ import socket
 
 server = '127.0.0.1' # Standard loopback interface addy (localhost)
 port = 65432 # Non-privileged ports are > 1023
-users = []
 
-def server_init():
+def server_init(server, port):
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #socket(address family for IPv4, socket type for TCP)
 	s.bind((server, port)) #bind, associates socket with specific network and port number
 	s.listen(5) #queus up to 5 connect requests
-
+	users = []
+	
 	while True:
 		clientcon, addr = s.accept() 
 		users.append(clientcon)

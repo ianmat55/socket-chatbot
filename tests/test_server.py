@@ -3,7 +3,7 @@ from socket_tutorial.server import server_init
 
 #settings
 @pytest.fixture
-def client():
+def settings():
 	settings = {
 	'server': '127.0.0.1', 
 	'port':  65432 
@@ -11,11 +11,12 @@ def client():
 
 	return settings
 
-def test_sanity(client):
-	assert client['server'] == '127.0.0.1' and client['port'] == 65432
+def test_sanity(settings):
+	assert settings['server'] == '127.0.0.1' and settings['port'] == 65432
 
 #does the server run
-
+def test_init(settings):
+	pass
 #can clients connect to it
 
 #can it recieve messages
@@ -28,5 +29,5 @@ def test_sanity(client):
 
 #list clients
 
-#boot a client that says something 
+
 
