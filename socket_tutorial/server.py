@@ -27,4 +27,4 @@ def server_init(server, port):
 				clientcon.sendall(data)
 
 if __name__ == '__main__':
-	server_init()
+	server_init(server, port)
