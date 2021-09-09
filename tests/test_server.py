@@ -1,5 +1,5 @@
 import pytest
-from socket_tutorial.server import server_init
+from socket_tutorial.server_thread import server_init
 
 #settings
 @pytest.fixture
@@ -17,6 +17,7 @@ def test_sanity(settings):
 #does the server run
 def test_init(settings):
 	pass
+
 #can clients connect to it
 
 #can it recieve messages
