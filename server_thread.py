@@ -15,12 +15,12 @@ class Server:
 	def handle_client(self, client_sock, addr):
 		self.clients.append(client_sock)
 		print(f"[Connected] {addr}")
-		# while True:
-		# 	msg = client_sock.recv(1024).decode('UTF-8')
-		# 	if msg == 'close()':
-		# 		break
-		# 	print(msg)
-		# client_sock.close()
+		while True:
+			msg = client_sock.recv(2048).decode('UTF-8')
+			if msg == 'close()':
+				break
+			print(msg)
+		client_sock.close()
 
 	def start(self):
 		print("Initializing server...")
