@@ -2,9 +2,10 @@ import socket
 from server_thread import ip, port
 
 class Client():
-	def __init__(self):
+	def __init__(self, nick=input('What is your username: ')):
 		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		
+		self.nick = nick 
+
 	def connect(self, ip, port):
 		self.s.connect((ip, port))
 	
@@ -16,8 +17,8 @@ class Client():
 			msg = input('')
 			if msg == 'close()':
 				break
-			message = msg.encode('UTF-8')
-			self.s.send(message)
+			message = msg
+			self.s.send(f"[{self.nick}] {message}".encode("UTF-8"))
 		self.close_con()		
 	
 	
