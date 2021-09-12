@@ -1,4 +1,4 @@
-import socket, threading
+import socket
 from server_thread import ip, port
 
 class Client():
@@ -8,23 +8,23 @@ class Client():
 	def connect(self, ip, port):
 		self.s.connect((ip, port))
 	
-	def send_msg(self, msg):
-		message = msg.encode('UTF-8')
-		self.s.send(message)
-	
 	def close_con(self):
 		self.s.close()
-		
+	
+	def send_msg(self):
+		while True:
+			msg = input('')
+			if msg == 'close()':
+				break
+			message = msg.encode('UTF-8')
+			self.s.send(message)
+		self.close_con()		
 	
 	
 def main():
 	test1 = Client()
 	test1.connect(ip, port)
-	while True:
-		message = input('enter input: ')
-		if message == 'close()':
-			break
-		test1.send_msg(message)
+	test1.send_msg()
 	test1.close_con()
 	
 	

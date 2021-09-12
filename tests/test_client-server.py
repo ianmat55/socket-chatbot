@@ -3,3 +3,8 @@
 #multiple clients sending numerous messages (overload)
 #sending large files
 #sending too much data
+
+import pytest
+import client_thread, server_thread
+
+

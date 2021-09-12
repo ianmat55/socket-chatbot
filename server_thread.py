@@ -8,6 +8,7 @@ class Server:
 	def __init__(self, clients = [], nicks = []):
 		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.s.bind((ip, port))
+		self.s.listen(5)
 
 		self.clients = clients
 		self.nicks = nicks
@@ -17,15 +18,14 @@ class Server:
 		print(f"[Connected] {addr}")
 		while True:
 			msg = client_sock.recv(2048).decode('UTF-8')
-			if msg == 'close()':
-				break
 			print(msg)
-		client_sock.close()
+			if not msg:
+				break
+		client_sock.close()	
 
 	def start(self):
 		print("Initializing server...")
 		print("HELLO WORLD")
-		self.s.listen(5) #up to 5 connections
 
 		while True:
 			client_sock, addr = self.s.accept()
@@ -33,7 +33,6 @@ class Server:
 			conn.start()
 			
 
-	
 def main():
 	server = Server()
 	server.start()
