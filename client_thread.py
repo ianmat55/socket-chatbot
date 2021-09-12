@@ -1,4 +1,4 @@
-import socket
+import socket, threading, time
 from server_thread import ip, port
 
 class Client():
@@ -17,17 +17,22 @@ class Client():
 			msg = input('')
 			if msg == 'close()':
 				break
-			message = msg
-			self.s.send(f"[{self.nick}] {message}".encode("UTF-8"))
-		self.close_con()		
-	
+			self.s.send(f"[{self.nick}] {msg}".encode("UTF-8"))
+		self.close_con()	
+
+	def recv_msg(self):
+		while True:
+			msg = self.s.recv(2048)
+			print(msg.decode("UTF-8"))
+		
 	
 def main():
 	test1 = Client()
 	test1.connect(ip, port)
-	test1.send_msg()
-	test1.close_con()
-	
+	recv_thread = threading.Thread(target=test1.recv_msg)
+	recv_thread.start()
+	send_thread = threading.Thread(target=test1.send_msg)
+	send_thread.start()
 	
 	
 

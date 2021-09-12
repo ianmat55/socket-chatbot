@@ -12,12 +12,17 @@ class Server:
 
 		self.clients = clients
 		self.nicks = nicks
-	
+
+	def broadcast(self, msg):
+		for client in self.clients:
+			client.send(msg.encode("UTF-8"))	
+
 	def handle_client(self, client_sock, addr):
 		self.clients.append(client_sock)
 		print(f"[Connected] {addr}")
 		while True:
 			msg = client_sock.recv(2048).decode('UTF-8')
+			self.broadcast(msg)
 			print(msg)
 			if not msg:
 				break
