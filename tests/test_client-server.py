@@ -5,6 +5,6 @@
 #sending too much data
 
 import pytest
-import client_thread, server_thread
+from threading import client_thread, server_thread
 
 
