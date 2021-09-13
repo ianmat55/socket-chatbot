@@ -9,16 +9,19 @@ class Client():
 	def connect(self, ip, port):
 		self.s.connect((ip, port))
 	
-	def close_con(self):
-		self.s.close()
-	
 	def send_msg(self):
 		while True:
-			msg = input('')
-			if msg == 'close()':
-				break
-			self.s.send(f"[{self.nick}] {msg}".encode("UTF-8"))
-		self.close_con()	
+			try:
+				msg = input('')
+				if msg == 'close()':
+					self.s.close()
+					break
+				self.s.send(f"[{self.nick}] {msg}".encode("UTF-8"))
+
+			except KeyboardInterrupt:
+				print('[GOODBYE]')
+				self.s.close()
+				break 
 
 	def recv_msg(self):
 		while True:

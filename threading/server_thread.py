@@ -29,7 +29,7 @@ class Server:
 		for client in self.clients:
 			client.send(msg.encode("UTF-8"))	
 
-	def handle_client(self, client_sock):
+	def handle_client(self, client_sock, nick):
 		while True:
 			try:
 				msg = client_sock.recv(2048).decode('UTF-8')
@@ -41,7 +41,12 @@ class Server:
 				if not msg:
 					break
 			except:
-				print(f"{client_sock} has left the chat")
+				print(f"{nick} has left the chat")
+				self.clients.remove(client_sock)
+				self.count -= 1
+				self.nicks.remove(nick)
+				print(f"users: {self.nicks}")
+				print(self.count)
 				client_sock.close()
 				break	
 
@@ -69,7 +74,7 @@ class Server:
 				client_sock.send("Welcome to the server\n".encode("UTF-8"))
 				self.broadcast(message)
 
-				conn = threading.Thread(target=self.handle_client, args=(client_sock,))
+				conn = threading.Thread(target=self.handle_client, args=(client_sock, nick))
 				conn.start()
 
 			#Shutdown server of ctrl-c	
