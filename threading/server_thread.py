@@ -5,15 +5,17 @@ port = 6500
 # header = 10
 
 class Server:
-	def __init__(self, clients = [], nicks = []):
+	def __init__(self, clients = [], nicks = [], users={}):
 		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		#Make addr resusable (able to start server again after shutdown)
 		self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 		self.s.bind((ip, port))
 		self.s.listen(5)
 
+		#transfer storage to dictionary users which will hold client: nick
 		self.clients = clients
 		self.nicks = nicks
+		self.users = users
 		self.count = 0
 
 	def __repr__(self):

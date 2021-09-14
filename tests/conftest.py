@@ -1,7 +1,11 @@
 import pytest
-from threading import server_thread, client_thread
+from base_socket import Client
 
-@pytest.fixture()
-def myserver(server_thread):
-	server_thread.main()
-	
+ip = '127.0.0.1' #localhost
+port = 6500
+
+@pytest.fixture
+def client():
+	Client = Client(ip,port)
+	return Client
+

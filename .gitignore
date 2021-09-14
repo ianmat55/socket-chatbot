@@ -2,3 +2,5 @@ irc.py
 __pycache__
 .pytest_cache
 app
+romeo.py
+.gitignore
