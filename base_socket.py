@@ -1,12 +1,13 @@
 import socket
 
 class Socket:
-	def __init__(self):
+	def __init__(self, ip, port):
 		self.con = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	
-	#not adding ip and port to init because we are connecting to ourself
-	def connect(self, ip, port):
-		self.con.connect((ip, port))
+		self.ip = ip
+		self.port = port
+
+	def connect(self):
+		self.con.connect((self.ip, self.port))
 	
 	def shutdown(self):
 		self.con.shutdown(socket.SHUT_RDWR)
@@ -21,9 +22,9 @@ class Socket:
 	
 	
 	#server functions
-	def listen(self, ip, port):
+	def listen(self):
 		self.con.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-		self.con.bind((ip, port))
+		self.con.bind((self.ip, self.port))
 		self.con.listen(5)
 	
 	def accept(self):
