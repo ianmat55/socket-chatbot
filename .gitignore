@@ -3,4 +3,4 @@ __pycache__
 .pytest_cache
 app
 romeo.py
-.gitignore
+juliet.py
