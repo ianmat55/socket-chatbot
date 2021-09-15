@@ -16,10 +16,11 @@ class Socket:
 	def send_msg(self, msg):
 		self.con.send(msg.encode("UTF-8"))
 		
-	def rcv_msg(self):
-		msg_rcv = self.con.recv(2048)
-		print(msg_rcv.decode("UTF-8"))
-	
+	def recv_msg(self, sock):
+		msg_recv = sock.recv(2048)
+		print(msg_recv.decode("UTF-8"))
+
+		return msg_recv
 	
 	#server functions
 	def listen(self):
@@ -28,8 +29,7 @@ class Socket:
 		self.con.listen(5)
 	
 	def accept(self):
-		client_sock, addr = self.con.accept()
-		return client_sock, addr
+		self.con.accept()
 	
 	#print info
 	def __repr__(self):
