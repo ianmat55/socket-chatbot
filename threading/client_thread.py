@@ -14,7 +14,6 @@ class Client():
 			try:
 				msg = input('')
 				if msg == 'close()':
-					self.s.shudown(socket.SHUT_RDWR)
 					self.s.close()
 					break
 				self.s.send(f"[{self.nick}] {msg}".encode("UTF-8"))

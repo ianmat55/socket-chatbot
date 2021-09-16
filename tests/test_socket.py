@@ -34,10 +34,33 @@ class Test_Base:
 		assert s_message == c_message 
 			
 
-#testing functionality of multithreaded socket (integration test)
-class Test_thread:
-	pass
+#testing server
+class Test_Server:
+	def test_server_start(self):
+		pass
 
-#testing romeo juliet script (system test)
-class Test_script:
-	pass
+	def test_client_connect(self):
+		pass
+
+	def test_end(self):
+		pass
+
+	def test_transcribe(self):
+		pass
+
+#testing client
+class Test_Client:
+	def test_connect(self):
+		pass
+
+	def test_declare_name(self):
+		pass
+
+	def test_read_script(self):
+		pass
+
+	def test_send(self):
+		pass
+
+	def test_disconnect(self):
+		pass

@@ -9,7 +9,10 @@ class Socket:
 	def connect(self):
 		self.con.connect((self.ip, self.port))
 	
-	def shutdown(self):
+	def shutdown(self, client_sock=None):
+		if client_sock != None:
+			client_sock.shutdown(socket.SHUT_RDWR)
+			client_sock.close()
 		self.con.shutdown(socket.SHUT_RDWR)
 		self.con.close()
 		
