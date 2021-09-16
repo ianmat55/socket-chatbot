@@ -4,3 +4,4 @@ __pycache__
 app
 romeo.py
 juliet.py
+stock_scraper.py
