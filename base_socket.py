@@ -16,15 +16,20 @@ class Socket:
 		self.con.shutdown(socket.SHUT_RDWR)
 		self.con.close()
 		
-	def send_msg(self, msg, client_sock=None):
-		try:
-			if client_sock != None:
-				client_sock.send(msg.encode("UTF-8"))
-			else:
-				self.con.send(msg.encode("UTF-8"))
-		except KeyboardInterrupt:
+	def send_msg(self):
+		while True:
+			try:
+				msg = input('')
+				if msg == 'close()':
+					self.con.close()
+					break
+				self.con.send(f"{msg}".encode("UTF-8"))
+
+			except KeyboardInterrupt:
 				print('[GOODBYE]')
-				self.s.close()
+				self.con.close()
+				break 
+		
 		
 	def recv_msg(self, client_sock=None):
 		if client_sock != None:
@@ -65,6 +70,92 @@ class Socket:
 		return structure
 
 
-test = Socket('127.0.0.1', 6500)
+#Server class
+class Server(Socket):
+	def __init__(self, ip, port, users=None):
+		super().__init__(ip, port)
+		if users == None:
+			self.users = {}
+		else:
+			self.users = users
+	
+
+	def broadcast(self, msg):
+		for client in self.users.keys():
+			client.send(msg.encode("UTF-8"))	
+
+	
+	def transcribe(self, msg):
+		with open('transcription.txt', 'w') as trans:
+			trans.write(msg)
+
+	def handle_client(self, client_sock, nick):
+		while True:
+			try:
+				msg = client_sock.recv(2048).decode('UTF-8')
+				# self.transcribe(msg)
+				print(msg)
+				if not msg:
+					break
+			except:
+				print(f"{nick} has left the chat")
+				for key, value in self.users.items():
+					if value == nick:
+						del self.users[key]
+						break
+				print(f"users: {[user for user in self.users.values()]}")
+				client_sock.close()
+				break	
+
+	def start(self):
+		print("Initializing server...")
+		while True:
+			try:
+				client_sock, addr = self.con.accept()
+				client_sock.send("NICK".encode("UTF-8"))
+				nick = client_sock.recv(2048).decode("UTF-8")
+				self.users[client_sock] = nick
+				print(f"users: {[user for user in self.users.values()]}")
+
+				#start thread
+				self.thread(self.handle_client, (client_sock, nick))
+
+			#Shutdown server of ctrl-c	
+			except KeyboardInterrupt:
+			       print('[GOODBYE]')
+			       self.con.close()
+			       break
+
+
+
+#Client class
+class Client(Socket):
+	def __init__(self, ip, port, nick, site=None):
+		super().__init__(ip, port)
+		self.nick = nick
+		self.site = site
+	
+	def read_file(self, file):
+		with open(str(file)) as f:
+			lines = f.readlines()
+			for line in lines:
+				self.con.send(line.encode("UTF-8"))	
+
+	def recv_msg(self):
+		while True:
+			try:
+				msg = self.con.recv(2048).decode("UTF-8")
+				if msg == "NICK":
+					self.con.send(self.nick.encode("UTF-8"))
+				else:
+					print(msg)
+
+			except:
+				print('[GOODBYE]')
+				self.con.close()
+				break	
+	
+
+
 
 

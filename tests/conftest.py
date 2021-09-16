@@ -1,6 +1,5 @@
 import pytest
 import base_socket as base
-import socket_inherit as s
 
 
 ip = '127.0.0.1' #localhost
