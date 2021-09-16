@@ -91,13 +91,10 @@ class Server(Socket):
 
 	def handle_client(self, client_sock, nick):
 		while True:
-			try:
-				msg = client_sock.recv(2048).decode('UTF-8')
-				# self.transcribe(msg)
-				print(msg)
-				if not msg:
-					break
-			except:
+			msg = client_sock.recv(2048).decode('UTF-8')
+			# self.transcribe(msg)
+			print(msg)
+			if not msg:
 				print(f"{nick} has left the chat")
 				for key, value in self.users.items():
 					if value == nick:
