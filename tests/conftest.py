@@ -1,5 +1,6 @@
 import pytest
-import base_socket as base
+import start_client as client
+import start_server as server
 
 
 ip = '127.0.0.1' #localhost
@@ -10,17 +11,17 @@ port = 6500
 
 @pytest.fixture
 def socket():
-	s = base.Socket(ip,port)
-	yield s
+	c = client.Socket(ip,port)
+	yield c
 
-	s.shutdown
+	c.shutdown()
 
 @pytest.fixture
 def server():
-	server = base.Socket(ip,port)
-	yield server
+	s = server.Socket(ip,port)
+	yield s
 
-	server.shutdown()
+	s.shutdown()
 
 
 

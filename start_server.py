@@ -4,6 +4,7 @@ from base_socket import Server
 port = 6500
 
 def main():
+	# Want to integrate this step in actual class later
 	ip_enter = input("Enter ip ('local' for localhost): ")
 	if ip_enter == 'local':
 		ip = '127.0.0.1'
