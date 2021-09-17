@@ -1,16 +1,17 @@
 from base_socket import Client 
 import threading
 
+ip = '127.0.0.1'
+port = 6500
+
 def main():
 	user = input('what is your name? ')
-	client = Client('127.0.0.1', 6500, user)
-	client.connect()
+	client = Client(ip, port, user)
+	client.connect(user)
 
 	client.thread(client.recv_msg)
 	client.thread(client.send_msg)
-	client.read_file('texts/poem.txt')
-
-	# client.shutdown()
+	# client.read_file('texts/poem.txt')
 
 if __name__ == '__main__':
 	main()

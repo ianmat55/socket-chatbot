@@ -1,7 +1,4 @@
-irc.py
 __pycache__
 .pytest_cache
 app
-romeo.py
-juliet.py
 stock_scraper.py

@@ -6,8 +6,10 @@ class Socket:
 		self.ip = ip
 		self.port = port
 
-	def connect(self):
+	def connect(self, user=None):
 		self.con.connect((self.ip, self.port))
+		print(f"* Welcome {user}")
+
 	
 	def shutdown(self, client_sock=None):
 		if client_sock != None:
@@ -15,14 +17,23 @@ class Socket:
 			client_sock.close()
 		self.con.shutdown(socket.SHUT_RDWR)
 		self.con.close()
+
+	# open a txt file, send the contents
+	def read_file(self, file):
+		with open(str(file)) as f:
+			lines = f.readlines()
+			for line in lines:
+				self.con.send(line.encode("UTF-8"))
 		
-	def send_msg(self):
+	def send_msg(self, file=None):
 		while True:
 			try:
 				msg = input('')
 				if msg == 'close()':
 					self.con.close()
 					break
+				if msg == f"read_file{file}":
+					self.read_file(file)
 				self.con.send(f"{msg}".encode("UTF-8"))
 
 			except KeyboardInterrupt:
@@ -127,16 +138,10 @@ class Server(Socket):
 
 #Client class
 class Client(Socket):
-	def __init__(self, ip, port, nick, site=None):
+	def __init__(self, ip, port, nick):
 		super().__init__(ip, port)
 		self.nick = nick
-		self.site = site
-	
-	def read_file(self, file):
-		with open(str(file)) as f:
-			lines = f.readlines()
-			for line in lines:
-				self.con.send(line.encode("UTF-8"))	
+		
 
 	def recv_msg(self):
 		while True:
