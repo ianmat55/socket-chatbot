@@ -15,10 +15,9 @@ class Client:
 		# username of client, need input when integrating class, can't put in init or 
 		# itll run on import
 		self.nick = nick 
-		print(ux.border)
-		print(ux.title)
-		print(ux.border)
-	
+
+		print(ux.title) # imported ascii art title
+		
 	# turned threading into a function because TDD principles?
 	def thread(self, func, params=None):
 		if params == None:
