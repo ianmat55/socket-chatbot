@@ -30,21 +30,14 @@ class Client:
 
 	def send_msg(self):
 		while True:
-			try:
-				msg = input('>> ')
-				if msg == 'close()':
-					self.con.close()
-				else:
-					self.con.send(f"{msg}".encode("UTF-8"))
-
-			except KeyboardInterrupt:
-				print('[GOODBYE]')
+			msg = input("")
+			if msg == 'close()':
 				self.con.close()
-				break 
-	
-		
-	def recv_msg(self):
+			else:
+				self.con.send(f"[{self.nick}] {msg}".encode("UTF-8"))
 
+			
+	def recv_msg(self):
 		#thread to send messages if message is typed
 		self.thread(self.send_msg)
 
@@ -61,13 +54,12 @@ class Client:
 				self.con.close()
 				break	
 
-	
-	def shutdown(self, client_sock=None):
-		if client_sock != None:
-			client_sock.shutdown(socket.SHUT_RDWR)
-			client_sock.close()
-		self.con.shutdown(socket.SHUT_RDWR)
-		self.con.close()
+	# def shutdown(self, client_sock=None):
+	# 	if client_sock != None:
+	# 		client_sock.shutdown(socket.SHUT_RDWR)
+	# 		client_sock.close()
+	# 	self.con.shutdown(socket.SHUT_RDWR)
+	# 	self.con.close()
 	
 	#print info
 	def get_constants(self, pref):
@@ -102,9 +94,10 @@ class Server(Client):
 		self.con.accept()
 	
 
-	def broadcast(self, msg):
+	def broadcast(self, msg, client_sock=None):
 		for client in self.users.keys():
-			client.send(msg.encode("UTF-8"))	
+			if client != client_sock:
+				client.send(msg.encode("UTF-8"))	
 
 	
 	# def transcribe(self, msg):
@@ -114,7 +107,7 @@ class Server(Client):
 	def handle_client(self, client_sock, nick):
 		while True:
 			msg = client_sock.recv(2048).decode('UTF-8')
-			self.broadcast(msg)
+			self.broadcast(msg, client_sock)
 			print(msg)
 			if not msg:
 				print(f"{nick} has left the chat")
@@ -134,6 +127,7 @@ class Server(Client):
 				client_sock.send("NICK".encode("UTF-8"))
 				nick = client_sock.recv(2048).decode("UTF-8")
 				self.users[client_sock] = nick
+				self.broadcast(f"\n{nick} has joined the chat!\n", client_sock)
 
 				# Turn this into a cmd line server function 
 				print(f"users: {[user for user in self.users.values()]}")
