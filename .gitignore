@@ -1,4 +1,4 @@
 __pycache__
 .pytest_cache
 app
-stock_scraper.py
+ux.py
