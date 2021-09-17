@@ -19,22 +19,20 @@ class Socket:
 		self.con.close()
 
 	# open a txt file, send the contents
-	def read_file(self, file):
-		with open(str(file)) as f:
-			lines = f.readlines()
-			for line in lines:
-				self.con.send(line.encode("UTF-8"))
+	# def read_file(self, file):
+	# 	with open(str(file)) as f:
+	# 		lines = f.readlines()
+	# 		for line in lines:
+	# 			self.con.send(line.encode("UTF-8"))
 		
-	def send_msg(self, file=None):
+	def send_msg(self):
 		while True:
 			try:
-				msg = input('')
+				msg = input('>> ')
 				if msg == 'close()':
 					self.con.close()
-					break
-				if msg == f"read_file{file}":
-					self.read_file(file)
-				self.con.send(f"{msg}".encode("UTF-8"))
+				else:
+					self.con.send(f"{msg}".encode("UTF-8"))
 
 			except KeyboardInterrupt:
 				print('[GOODBYE]')
@@ -96,14 +94,14 @@ class Server(Socket):
 			client.send(msg.encode("UTF-8"))	
 
 	
-	def transcribe(self, msg):
-		with open('transcription.txt', 'w') as trans:
-			trans.write(msg)
+	# def transcribe(self, msg):
+	# 	with open('transcription.txt', 'w') as trans:
+	# 		trans.write(msg)
 
 	def handle_client(self, client_sock, nick):
 		while True:
 			msg = client_sock.recv(2048).decode('UTF-8')
-			# self.transcribe(msg)
+			self.broadcast(msg)
 			print(msg)
 			if not msg:
 				print(f"{nick} has left the chat")
@@ -123,6 +121,8 @@ class Server(Socket):
 				client_sock.send("NICK".encode("UTF-8"))
 				nick = client_sock.recv(2048).decode("UTF-8")
 				self.users[client_sock] = nick
+
+				# Turn this into a cmd line server function 
 				print(f"users: {[user for user in self.users.values()]}")
 
 				#start thread
@@ -144,6 +144,9 @@ class Client(Socket):
 		
 
 	def recv_msg(self):
+
+		self.thread(self.send_msg)
+
 		while True:
 			try:
 				msg = self.con.recv(2048).decode("UTF-8")

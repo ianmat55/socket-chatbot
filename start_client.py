@@ -10,7 +10,6 @@ def main():
 	client.connect(user)
 
 	client.thread(client.recv_msg)
-	client.thread(client.send_msg)
 	# client.read_file('texts/poem.txt')
 
 if __name__ == '__main__':
