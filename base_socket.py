@@ -196,6 +196,16 @@ class Server(Client):
 		for user, sock in zip(users, socks):
 			user_table.add_row(user, str(sock))
 		self.console.print(user_table)
+	
+	# Kick function still buggy
+	def kick(self, user):
+		try:
+			for key, value in self.users.items():
+				if user == value:
+					key.send("You have been kicked from server.".encode("UTF-8"))
+					key.close()
+		except Exception as e:
+			print(e)
 
 ##########################################################################################################
 
@@ -227,6 +237,9 @@ class Server(Client):
 					except Exception as e:
 						print(e)
 						continue
+				elif msg == "KICK()":
+					user = input("Username to kick: ")
+					self.kick(user)
 				elif msg == 'LOG()':
 					pass
 				else:

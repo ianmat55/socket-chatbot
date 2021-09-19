@@ -1,6 +1,4 @@
 from base_socket import Client 
-from rich.table import Table
-from rich.console import Console
 
 port = 6500
 
