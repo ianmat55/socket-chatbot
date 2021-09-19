@@ -8,8 +8,6 @@ from rich.console import Console
 from rich.table import Table
 from rich import print
 
-############################################ CLIENT CLASS ################################################
-
 class Client:
 	def __init__(self, ip, port, nick=None):
 		self.con = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
@@ -35,33 +33,56 @@ class Client:
 		else:
 			conn = threading.Thread(target=func, args=(params))
 			conn.start()
-
-
-	# open a txt file, send the contents. Texts are in 'texts' folder
-	def read_file(self, file):
-		with open(str(file)) as f:
-			lines = f.readlines()
-			for line in lines:
-				self.con.send(line.encode("UTF-8"))
-
+	
 	def connect(self):
-		try:
+		try:	
+			# prints help table at startup. Imported from ux module 
+			ux.print_client_help()
+
 			self.con.connect((self.ip, self.port))
 			self.thread(self.recv_msg)
 			print(f"* Welcome {self.nick}")
 		except:
 			print('Could not connect to server')
 
+############################################ CLI FUNCTIONS ################################################
+
+	def read_file(self, file):
+		with open(str(file)) as f:
+			self.con.send('\n'.encode("UTF-8"))
+			lines = f.readlines() 
+			for line in lines:
+				self.con.send(line.encode("UTF-8"))
+			self.con.send('\n'.encode("UTF-8"))
+	
+	def clear(self):
+		os.system('cls' if os.name == 'nt' else 'clear')
+	
+	def display_help(self):
+		pass
+
+############################################################################################################
 
 	def send_msg(self):
 		while True:
 			try:
-				msg = input("") # input needs to be blank for formatting in CLI, find a workaround later
+				msg = input("") # input needs to be blank for formatting
 
-				# cmd line functions (close, send contents of text file, etc)
-				if msg == 'close()':
+				# cmd line functions
+				if msg == 'EXIT()':
 					self.con.close()
 					os._exit(1)
+				elif msg == 'READ()': # have to hit enter twice. Why?
+					filename = input("Path to File: ")
+					try:
+						self.read_file(filename)
+					except Exception as e:
+						print(e)
+						continue
+				elif msg == 'CLS()':
+					self.clear()
+				elif msg == 'HELP()':
+					ux.print_client_help()
 				else:
 					self.con.send(f"[{self.nick}] {msg}".encode("UTF-8"))
 
@@ -69,7 +90,6 @@ class Client:
 				print("connection failed")
 				break
 			
-
 	def recv_msg(self):
 
 		#thread to send messages if message is typed
@@ -110,7 +130,7 @@ class Client:
 
 
 
-############################################ SERVER CLASS #################################################
+
 
 class Server(Client):
 	def __init__(self, ip, port, users=None):
@@ -150,21 +170,67 @@ class Server(Client):
 				client_sock.close()
 				break	
 	
-	# CMD line functions for server
-	
-	def transcribe(self, msg):
-		with open('transcription.txt', 'w') as trans:
-			trans.write(msg)
-	
+############################################ CLI FUNCTIONS ################################################
+
+	def log(self):
+		pass
+
+	def bc(self, name):
+		for key, value in self.users.items():
+			if name == value:
+				personal = input("message: ")
+				key.send(f"[SERVER] {personal}".encode("UTF-8"))
+
+	def read_file(self, file):
+		with open(str(file)) as f:
+			self.broadcast("\n")
+			lines = f.readlines() 
+			for line in lines:
+				self.broadcast(line)
+			self.broadcast("\n")
+	def ls(self):
+		user_table = Table(title="Users")
+		user_table.add_column("Username")
+		user_table.add_column("Connection")
+					
+		socks = [sock for sock in self.users.keys()]
+		users = [user for user in self.users.values()]
+		for user, sock in zip(users, socks):
+			user_table.add_row(user, str(sock))
+		self.console.print(user_table)
+
+##########################################################################################################
+
 	def cmd_line_functions(self):
 		while True:
 			try:
-				msg = input("") # input needs to be blank for formatting in CLI, find a workaround later
-
-				# cmd line functions (close, send contents of text file, etc)
-				if msg == 'transcribe()':
-					self.transcribe(msg)
+				msg = input("") 
 				
+				if msg == 'EXIT()':
+					self.con.close()
+					os._exit(1)
+				elif msg == 'READ()':
+					filename = input("Path to File: ")
+					try:
+						self.read_file(filename)
+					except Exception as e:
+						print(e)
+						continue
+				if msg == 'CLS()':
+					self.clear()
+				elif msg == 'HELP()':
+					ux.print_server_help()
+				elif msg == 'LS()':
+					self.ls()
+				elif msg == 'BC()':
+					try:
+						name = input("User to send message: ")
+						self.bc(name)
+					except Exception as e:
+						print(e)
+						continue
+				elif msg == 'LOG()':
+					pass
 				else:
 					self.broadcast(f"[SERVER] {msg}")
 			except Exception as e:
@@ -173,24 +239,8 @@ class Server(Client):
 
 	def start(self):
 
-		# Add onload string to include server commands and nice start-up message
-		# Created table with rich library table constructor
-		table = Table(title="Server Commands")
-
-		# table columns
-		table.add_column("Command")
-		table.add_column("Description")
-
-		# table rows
-		table.add_row("BC('name')", "Broadcast a message to a specific client")
-		table.add_row("CLS()", "Clear the screen")
-		table.add_row("HELP()", "Provide information for server commands")
-		table.add_row("KICK()", "Kick a client from the server")
-		table.add_row("LS()", "List current connections")
-		table.add_row("TRANS()", "Log conversation")
-
-		self.console.print(table)
-
+		# prints help table at startup. Imported from ux module 
+		ux.print_server_help()
 
 		while True:
 			try:
@@ -203,7 +253,7 @@ class Server(Client):
 				# Turn this into a cmd line server function 
 				print(f"users: {[user for user in self.users.values()]}")
 
-				#start thread
+				# Start threads
 				self.thread(self.handle_client, (client_sock, nick))
 				self.thread(self.cmd_line_functions)
 
