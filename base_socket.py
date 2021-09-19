@@ -3,10 +3,8 @@
 
 import socket, threading
 import ux, os
-from rich.theme import Theme
 from rich.console import Console
 from rich.table import Table
-from rich import print
 
 class Client:
 	def __init__(self, ip, port, nick=None):
@@ -20,7 +18,7 @@ class Client:
 
 
 		# Ric text color text customization
-		custom_theme = Theme({"title": "cyan", "error": "bold red", "reg": "blue"})
+		custom_theme = ux.theme
 		self.console = Console(theme=custom_theme)
 		self.console.print(f"{ux.title}", style="title") # imported ascii art title
 		
