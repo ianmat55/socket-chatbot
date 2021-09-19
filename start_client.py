@@ -1,5 +1,4 @@
 from base_socket import Client 
-import threading
 
 port = 6500
 

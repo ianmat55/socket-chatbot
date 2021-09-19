@@ -29,7 +29,7 @@ end
 # unset irrelevant variables
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/ian/Desktop/python_projects/simple_irc_client/env"
+set -gx VIRTUAL_ENV "/home/ian/Desktop/python_projects/simple_socket/env"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

@@ -1,4 +1,4 @@
-#!/home/ian/Desktop/python_projects/simple_irc_client/env/bin/python3
+#!/home/ian/Desktop/python_projects/simple_socket/env/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
