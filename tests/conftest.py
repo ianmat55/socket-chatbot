@@ -1,6 +1,6 @@
-import pytest
+import pytest, socket
 import base_socket as Socket
-
+import threading
 
 ip = '127.0.0.1' #localhost
 port = 6500
@@ -17,9 +17,11 @@ def client():
 
 	c.con.close()
 
+
 @pytest.fixture
 def server():
 	s = Socket.Server(ip,port)
+	s.listen()
 
 	yield s
 

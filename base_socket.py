@@ -17,7 +17,7 @@ class Client:
 		self.nick = nick 
 
 
-		# Ric text color text customization
+		# Rich text color text customization
 		custom_theme = ux.theme
 		self.console = Console(theme=custom_theme)
 		self.console.print(f"{ux.title}", style="title") # imported ascii art title
@@ -55,9 +55,6 @@ class Client:
 	
 	def clear(self):
 		os.system('cls' if os.name == 'nt' else 'clear')
-	
-	def display_help(self):
-		pass
 
 ############################################################################################################
 
@@ -90,11 +87,10 @@ class Client:
 			
 	def recv_msg(self):
 
-		#thread to send messages if message is typed
+		# init thread to send messages 
 		self.thread(self.send_msg)
 
 		while True:
-			
 			try:
 				msg = self.con.recv(2048).decode("UTF-8")
 				if msg == "NICK":
@@ -136,7 +132,7 @@ class Server(Client):
 
 		# Not good to put a mutable object in init, could cause problems with different versions 
 		if users == None:
-			self.users = {}
+			self.users = {} # keys: socket object, values: usernames
 		else:
 			self.users = users
 	
@@ -145,12 +141,9 @@ class Server(Client):
 		self.con.bind((self.ip, self.port))
 		self.con.listen(5)
 	
-	def accept(self):
-		self.con.accept()
-	
 	def broadcast(self, msg, client_sock=None):
-		for client in self.users.keys():
-			if client != client_sock:
+		for client in self.users.keys(): # client objects stored as dictionary keys to username values
+			if client != client_sock: # don't want to send the message to original sender
 				client.send(msg.encode("UTF-8"))
 
 	def handle_client(self, client_sock, nick):
@@ -259,10 +252,8 @@ class Server(Client):
 				client_sock.send("NICK".encode("UTF-8"))
 				nick = client_sock.recv(2048).decode("UTF-8")
 				self.users[client_sock] = nick
-				self.broadcast(f"\n{nick} has joined the chat!\n", client_sock)
-
-				# Turn this into a cmd line server function 
-				print(f"users: {[user for user in self.users.values()]}")
+				print(f"{nick} has joined the chat")
+				self.broadcast(f"\n{nick} has joined the chat!\n")
 
 				# Start threads
 				self.thread(self.handle_client, (client_sock, nick))
