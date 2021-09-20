@@ -1,5 +1,5 @@
 from base_socket import Client, Server
-import pytest, time, threading, socket
+import pytest, time, threading, socket, os
 
 
 ip = '127.0.0.1'
@@ -15,12 +15,12 @@ def test_ServerConnection(server):
 	dummy_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	dummy_client.settimeout(1)
 	dummy_client.connect((ip,port))
-	dummy_client.close()
 	
 	assert server.con != None
 
+	dummy_client.close()
+	server.con.close()
 
-		
 		
 
 
