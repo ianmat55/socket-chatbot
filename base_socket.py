@@ -145,7 +145,7 @@ class Server(Client):
 		for client in self.users.keys(): # client objects stored as dictionary keys to username values
 			if client != client_sock: # don't want to send the message to original sender
 				client.send(msg.encode("UTF-8"))
-
+	
 	def handle_client(self, client_sock, nick):
 		while True:
 			msg = client_sock.recv(2048).decode('UTF-8')

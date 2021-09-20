@@ -15,7 +15,6 @@ def client():
 
 	yield c
 
-	c.con.close()
 
 
 @pytest.fixture
