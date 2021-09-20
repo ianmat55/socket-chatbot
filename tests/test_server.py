@@ -16,15 +16,11 @@ def test_ServerConnection(server):
 	dummy_client.settimeout(1)
 	dummy_client.connect((ip,port))
 	dummy_client.close()
-
-	server_thread.join()
-
+	
 	assert server.con != None
 
-# def test_ServerMsg():
-# 	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dummy_client:
-# 		dummy_client.connect((ip,port))
-# 		pass
+
+		
 		
 
 

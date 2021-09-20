@@ -15,7 +15,7 @@ def client():
 
 	yield c
 
-
+	c.con.close()
 
 @pytest.fixture
 def server():
@@ -23,6 +23,8 @@ def server():
 	s.listen()
 
 	yield s
+
+	s.con.close()
 
 
 
