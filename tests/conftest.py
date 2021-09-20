@@ -24,6 +24,6 @@ def server():
 
 	yield s
 
-	s.con.close()
+
 
 

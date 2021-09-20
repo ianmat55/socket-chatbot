@@ -253,14 +253,14 @@ class Server(Client):
 				nick = client_sock.recv(2048).decode("UTF-8")
 				self.users[client_sock] = nick
 				print(f"{nick} has joined the chat")
-				self.broadcast(f"\n{nick} has joined the chat!\n")
+				self.broadcast(f"\n{nick} has joined the chat!\n", client_sock)
 
 				# Start threads
 				self.thread(self.handle_client, (client_sock, nick))
 				self.thread(self.cmd_line_functions)
 
 			#Shutdown server of ctrl-c	
-			except KeyboardInterrupt:
+			except:
 				print('[GOODBYE]')
 				self.con.close()
 				os._exit(1)
