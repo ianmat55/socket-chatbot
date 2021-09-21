@@ -5,6 +5,7 @@ import socket, threading
 import ux, os
 from rich.console import Console
 from rich.table import Table
+from rich.panel import Panel
 
 class Client:
 	def __init__(self, ip, port, nick=None):
@@ -20,7 +21,7 @@ class Client:
 		# Rich text color text customization
 		custom_theme = ux.theme
 		self.console = Console(theme=custom_theme)
-		self.console.print(f"{ux.title}", style="text") # imported ascii art title
+		print(ux.title) # imported ascii art title
 		
 	# turned threading into a function because TDD principles?
 	def thread(self, func, params=None):
