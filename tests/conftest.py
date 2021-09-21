@@ -20,7 +20,6 @@ def client():
 @pytest.fixture
 def server():
 	s = Socket.Server(ip,port)
-	s.listen()
 
 	yield s
 

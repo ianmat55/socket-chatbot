@@ -10,7 +10,6 @@ def main():
 		ip = '127.0.0.1'
 	else: ip = ip_enter
 	server = Server(ip, port)
-	server.listen()
 	server.start()
 
 if __name__ == '__main__':

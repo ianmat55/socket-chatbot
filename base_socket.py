@@ -20,7 +20,7 @@ class Client:
 		# Rich text color text customization
 		custom_theme = ux.theme
 		self.console = Console(theme=custom_theme)
-		self.console.print(f"{ux.title}", style="title") # imported ascii art title
+		self.console.print(f"{ux.title}", style="text") # imported ascii art title
 		
 	# turned threading into a function because TDD principles?
 	def thread(self, func, params=None):
@@ -135,11 +135,9 @@ class Server(Client):
 			self.users = {} # keys: socket object, values: usernames
 		else:
 			self.users = users
-	
-	def listen(self):
+
 		self.con.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # Reuse addr if con reopened
 		self.con.bind((self.ip, self.port))
-		self.con.listen(5)
 	
 	def broadcast(self, msg, client_sock=None):
 		for client in self.users.keys(): # client objects stored as dictionary keys to username values
@@ -188,7 +186,7 @@ class Server(Client):
 		users = [user for user in self.users.values()]
 		for user, sock in zip(users, socks):
 			user_table.add_row(user, str(sock))
-		self.console.print(user_table)
+		self.console.print(user_table, style="text")
 	
 	# Kick function still buggy
 	def kick(self, user):
@@ -245,7 +243,7 @@ class Server(Client):
 
 		# prints help table at startup. Imported from ux module 
 		ux.print_server_help()
-
+		self.con.listen(5)
 		while True:
 			try:
 				client_sock, addr = self.con.accept()
