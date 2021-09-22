@@ -2,10 +2,35 @@
 # email: ianmat55@gmail.com
 
 import socket, threading
-import ux, os
+import ux, os, logging
 from rich.console import Console
 from rich.table import Table
-from rich.panel import Panel
+
+# Rich text color text customization
+custom_theme = ux.theme
+console = Console(theme=custom_theme)
+
+# init log settings
+logger = logging.getLogger('transcript_logger')
+formatter = logging.Formatter('%(asctime)s:%(message)s')
+file_handler = logging.handlers.RotatingFileHandler('transcript.log')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
+logger2 = logging.getLogger('error_logger')
+formatter2 = logging.Formatter('%(asctime)s:%(levelname)s%(message)s')
+file_handler2 = logging.handlers.RotatingFileHandler('debug.log')
+file_handler2.setFormatter(formatter2)
+logger2.addHandler(file_handler2)
+
+# logger.setLevel(logging.INFO)
+# formatter = logging.Formatter('%(asctime)s:%(message)s')
+# file_handler = logging.FileHandler('transcript.log')
+# file_handler.setFormatter(formatter)
+# logger.addHandler(file_handler)
+
+# logging.basicConfig(filename='debug.log', level=logging.DEBUG,
+# 	format='%(asctime)s:%(levelname)s%(message)s')
 
 class Client:
 	def __init__(self, ip, port, nick=None):
@@ -17,11 +42,8 @@ class Client:
 		# itll run on import
 		self.nick = nick 
 
-
-		# Rich text color text customization
-		custom_theme = ux.theme
-		self.console = Console(theme=custom_theme)
-		self.console.print(ux.title, style="peach") # imported ascii art title
+		console.print(ux.title, style="peach") # imported ascii art title
+		
 		
 	# turned threading into a function because TDD principles?
 	def thread(self, func, params=None):
@@ -190,9 +212,8 @@ class Server(Client):
 		users = [user for user in self.users.values()]
 		for user, sock in zip(users, socks):
 			user_table.add_row(user, str(sock))
-		self.console.print(user_table, style="user", justify="center")
+		console.print(user_table, style="user", justify="center")
 	
-	# Kick function still buggy
 	def kick(self, user):
 		try:
 			for key, value in self.users.items():

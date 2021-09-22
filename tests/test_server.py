@@ -17,7 +17,7 @@ def test_ServerConnection(server):
 	dummy_client.connect((ip,port))
 	
 	assert server.con != None
-
+	
 	dummy_client.close()
 	server.con.close()
 
