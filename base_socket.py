@@ -21,7 +21,7 @@ class Client:
 		# Rich text color text customization
 		custom_theme = ux.theme
 		self.console = Console(theme=custom_theme)
-		print(ux.title) # imported ascii art title
+		self.console.print(ux.title, style="peach") # imported ascii art title
 		
 	# turned threading into a function because TDD principles?
 	def thread(self, func, params=None):
@@ -65,19 +65,19 @@ class Client:
 				msg = input("") # input needs to be blank for formatting
 
 				# cmd line functions
-				if msg == 'EXIT()':
+				if msg.lower() == 'exit()':
 					self.con.close()
 					os._exit(1)
-				elif msg == 'READ()': # have to hit enter twice. Why?
+				elif msg.lower() == 'read()': # have to hit enter twice. Why?
 					filename = input("Path to File: ")
 					try:
 						self.read_file(filename)
 					except Exception as e:
 						print(e)
 						continue
-				elif msg == 'CLS()':
+				elif msg.lower() == 'cls()':
 					self.clear()
-				elif msg == 'HELP()':
+				elif msg.lower() == 'help()':
 					ux.print_client_help()
 				else:
 					self.con.send(f"[{self.nick}] {msg}".encode("UTF-8"))
@@ -121,8 +121,6 @@ class Client:
 		
 		except:
 			print('socket not AF_INET and/or TCP')
-
-
 
 
 
@@ -187,7 +185,7 @@ class Server(Client):
 		users = [user for user in self.users.values()]
 		for user, sock in zip(users, socks):
 			user_table.add_row(user, str(sock))
-		self.console.print(user_table, style="text")
+		self.console.print(user_table, style="user", justify="center")
 	
 	# Kick function still buggy
 	def kick(self, user):
@@ -195,6 +193,8 @@ class Server(Client):
 			for key, value in self.users.items():
 				if user == value:
 					key.send("You have been kicked from server.".encode("UTF-8"))
+					self.broadcast(f"{user} has been kicked from server.")
+					key.shutdown(socket.SHUT_RDWR)
 					key.close()
 		except Exception as e:
 			print(e)
@@ -206,33 +206,33 @@ class Server(Client):
 			try:
 				msg = input("") 
 				
-				if msg == 'EXIT()':
+				if msg.lower() == 'exit()':
 					self.con.close()
 					os._exit(1)
-				elif msg == 'READ()':
+				elif msg.lower() == 'read()':
 					filename = input("Path to File: ")
 					try:
 						self.read_file(filename)
 					except Exception as e:
 						print(e)
 						continue
-				if msg == 'CLS()':
+				if msg.lower() == 'cls()':
 					self.clear()
-				elif msg == 'HELP()':
+				elif msg.lower() == 'help()':
 					ux.print_server_help()
-				elif msg == 'LS()':
+				elif msg.lower() == 'ls()':
 					self.ls()
-				elif msg == 'BC()':
+				elif msg.lower() == 'bc()':
 					try:
 						name = input("User to send message: ")
 						self.bc(name)
 					except Exception as e:
 						print(e)
 						continue
-				elif msg == "KICK()":
+				elif msg.lower() == "kick()":
 					user = input("Username to kick: ")
 					self.kick(user)
-				elif msg == 'LOG()':
+				elif msg.lower() == 'log()':
 					pass
 				else:
 					self.broadcast(f"[SERVER] {msg}")
