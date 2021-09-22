@@ -93,11 +93,15 @@ class Client:
 
 		while True:
 			try:
-				msg = self.con.recv(2048).decode("UTF-8")
-				if msg == "NICK":
+				msg = self.con.recv(2048)
+				# If message len = 0, connection has been closed. Break out of recv loop
+				# if this happens to prevent an infinite loop in case server con closed
+				if len(msg) == 0:
+					break
+				elif msg.decode("UTF-8") == "NICK":
 					self.con.send(self.nick.encode("UTF-8"))
 				else:
-					print(msg)
+					print(msg.decode("UTF-8"))
 			
 			except Exception as e:
 				print(e)
@@ -158,6 +162,7 @@ class Server(Client):
 				client_sock.close()
 				break	
 	
+
 ############################################ CLI FUNCTIONS ################################################
 
 	def log(self):
