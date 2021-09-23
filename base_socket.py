@@ -86,7 +86,10 @@ class Client:
 				elif msg.lower() == 'cls()':
 					self.clear()
 				elif msg.lower() == 'help()':
-					ui.print_client_help()
+					try:
+						ui.print_client_help()
+					except Exception as e:
+						logger.debug(e)
 				else:
 					self.con.send(f"[{self.nick}] {msg}".encode("UTF-8"))
 
