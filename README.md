@@ -11,7 +11,6 @@ Server Functions:
 kick() - kicks a specific user from chat
 ls() - lists active connections
 bc() - send msg directly to one client
-log() - logs all messages up to when command is called
 
 Both Client and Server:
 read() - specify a path to text file and server will read file into chat

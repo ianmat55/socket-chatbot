@@ -3,6 +3,7 @@
 
 import socket, threading
 import ux, os, logging
+from logging.handlers import QueueHandler
 from rich.console import Console
 from rich.table import Table
 
@@ -11,26 +12,11 @@ custom_theme = ux.theme
 console = Console(theme=custom_theme)
 
 # init log settings
-logger = logging.getLogger('transcript_logger')
-formatter = logging.Formatter('%(asctime)s:%(message)s')
-file_handler = logging.handlers.RotatingFileHandler('transcript.log')
+logger = logging.getLogger('error_logger')
+formatter = logging.Formatter('%(asctime)s:%(levelname)s%(message)s')
+file_handler = logging.handlers.RotatingFileHandler('debug.log')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
-
-logger2 = logging.getLogger('error_logger')
-formatter2 = logging.Formatter('%(asctime)s:%(levelname)s%(message)s')
-file_handler2 = logging.handlers.RotatingFileHandler('debug.log')
-file_handler2.setFormatter(formatter2)
-logger2.addHandler(file_handler2)
-
-# logger.setLevel(logging.INFO)
-# formatter = logging.Formatter('%(asctime)s:%(message)s')
-# file_handler = logging.FileHandler('transcript.log')
-# file_handler.setFormatter(formatter)
-# logger.addHandler(file_handler)
-
-# logging.basicConfig(filename='debug.log', level=logging.DEBUG,
-# 	format='%(asctime)s:%(levelname)s%(message)s')
 
 class Client:
 	def __init__(self, ip, port, nick=None):
@@ -62,9 +48,9 @@ class Client:
 
 			self.con.connect((self.ip, self.port))
 			self.thread(self.recv_msg)
-			print(f"* Welcome {self.nick}")
+			console.print(f"* Welcome {self.nick}", style='peach')
 		except:
-			print('Could not connect to server')
+			console.print('Could not connect to server', style='wine')
 
 ############################################ CLI FUNCTIONS ################################################
 
@@ -79,7 +65,7 @@ class Client:
 	def clear(self):
 		os.system('cls' if os.name == 'nt' else 'clear')
 
-############################################################################################################
+###########################################################################################################
 
 	def send_msg(self):
 		while True:
@@ -93,9 +79,9 @@ class Client:
 				elif msg.lower() == 'read()': # have to hit enter twice. Why?
 					filename = input("Path to File: ")
 					try:
-						self.read_file(filename)
+						self.read_file(filename + '\n')
 					except Exception as e:
-						print(e)
+						console.print(e,style='wine')
 						continue
 				elif msg.lower() == 'cls()':
 					self.clear()
@@ -104,8 +90,8 @@ class Client:
 				else:
 					self.con.send(f"[{self.nick}] {msg}".encode("UTF-8"))
 
-			except:
-				print("connection failed")
+			except Exception as e:
+				console.print("connection failed", style="wine")
 				break
 			
 	def recv_msg(self):
@@ -123,7 +109,7 @@ class Client:
 				elif msg.decode("UTF-8") == "NICK":
 					self.con.send(self.nick.encode("UTF-8"))
 				else:
-					print(msg.decode("UTF-8"))
+					console.print(msg.decode("UTF-8"), style='dark_purp')
 			
 			except Exception as e:
 				print(e)
@@ -146,7 +132,7 @@ class Client:
 			return structure
 		
 		except:
-			print('socket not AF_INET and/or TCP')
+			console.print('socket not AF_INET and/or TCP', style='wine')
 
 
 
@@ -173,22 +159,19 @@ class Server(Client):
 		while True:
 			msg = client_sock.recv(2048).decode('UTF-8')
 			self.broadcast(msg, client_sock)
-			print(msg)
+			console.print(msg, style='dark_purp')
 			if not msg:
-				print(f"{nick} has left the chat")
+				console.print(f"{nick} has left the chat", style="peach")
 				for key, value in self.users.items():
 					if value == nick:
 						del self.users[key]
 						break
-				print(f"users: {[user for user in self.users.values()]}")
+				console.print(f"users: {[user for user in self.users.values()]}", style="peach")
 				client_sock.close()
 				break	
 	
 
 ############################################ CLI FUNCTIONS ################################################
-
-	def log(self):
-		pass
 
 	def bc(self, name):
 		for key, value in self.users.items():
@@ -212,7 +195,7 @@ class Server(Client):
 		users = [user for user in self.users.values()]
 		for user, sock in zip(users, socks):
 			user_table.add_row(user, str(sock))
-		console.print(user_table, style="user", justify="center")
+		console.print(user_table, style="peach", justify="center")
 	
 	def kick(self, user):
 		try:
@@ -258,8 +241,6 @@ class Server(Client):
 				elif msg.lower() == "kick()":
 					user = input("Username to kick: ")
 					self.kick(user)
-				elif msg.lower() == 'log()':
-					pass
 				else:
 					self.broadcast(f"[SERVER] {msg}")
 			except Exception as e:
@@ -276,8 +257,14 @@ class Server(Client):
 				client_sock, addr = self.con.accept()
 				client_sock.send("NICK".encode("UTF-8"))
 				nick = client_sock.recv(2048).decode("UTF-8")
+
+				if nick in self.users.values():
+					self.con.send('Username taken, try again'.encode("UTF-8"))
+					client_sock.close()
+					continue
+
 				self.users[client_sock] = nick
-				print(f"{nick} has joined the chat")
+				console.print(f"{nick} has joined the chat", style="peach")
 				self.broadcast(f"\n{nick} has joined the chat!\n", client_sock)
 
 				# Start threads
@@ -285,8 +272,9 @@ class Server(Client):
 				self.thread(self.cmd_line_functions)
 
 			#Shutdown server of ctrl-c	
-			except:
-				print('[GOODBYE]')
+			except Exception as e:
+				console.print(e, style='wine')
+				console.print('[GOODBYE]', style='wine')
 				self.con.close()
 				os._exit(1)
 
