@@ -2,13 +2,13 @@
 # email: ianmat55@gmail.com
 
 import socket, threading
-import ux, os, logging
+import ui, os, logging
 from logging.handlers import QueueHandler
 from rich.console import Console
 from rich.table import Table
 
 # Rich text color text customization
-custom_theme = ux.theme
+custom_theme = ui.theme
 console = Console(theme=custom_theme)
 
 # init log settings
@@ -29,7 +29,7 @@ class Client:
 		# itll run on import
 		self.nick = nick 
 
-		console.print(ux.title, style="peach") # imported ascii art title
+		console.print(ui.title, style="peach") # imported ascii art title
 		
 		
 	# turned threading into a function because TDD principles?
@@ -43,8 +43,8 @@ class Client:
 	
 	def connect(self):
 		try:	
-			# prints help table at startup. Imported from ux module 
-			ux.print_client_help()
+			# prints help table at startup. Imported from ui module 
+			ui.print_client_help()
 
 			self.con.connect((self.ip, self.port))
 			self.thread(self.recv_msg)
@@ -86,7 +86,7 @@ class Client:
 				elif msg.lower() == 'cls()':
 					self.clear()
 				elif msg.lower() == 'help()':
-					ux.print_client_help()
+					ui.print_client_help()
 				else:
 					self.con.send(f"[{self.nick}] {msg}".encode("UTF-8"))
 
@@ -230,7 +230,7 @@ class Server(Client):
 				if msg.lower() == 'cls()':
 					self.clear()
 				elif msg.lower() == 'help()':
-					ux.print_server_help()
+					ui.print_server_help()
 				elif msg.lower() == 'ls()':
 					self.ls()
 				elif msg.lower() == 'bc()':
@@ -251,8 +251,8 @@ class Server(Client):
 
 	def start(self):
 
-		# prints help table at startup. Imported from ux module 
-		ux.print_server_help()
+		# prints help table at startup. Imported from ui module 
+		ui.print_server_help()
 		self.con.listen(5)
 		while True:
 			try:

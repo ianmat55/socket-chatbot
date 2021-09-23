@@ -27,7 +27,7 @@ obsidian = {
 	"wine": "#de4383",
 	"orange": "#f8a978"
 }
-############################# ASCII ART and UX #################################
+############################# ASCII ART and UI #################################
 theme = Theme(obsidian)
 console = Console(theme=theme)
 
