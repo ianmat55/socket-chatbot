@@ -79,7 +79,7 @@ class Client:
 				elif msg.lower() == 'read()': # have to hit enter twice. Why?
 					filename = input("Path to File: ")
 					try:
-						self.read_file(filename + '\n')
+						self.read_file(filename)
 					except Exception as e:
 						console.print(e,style='wine')
 						continue
