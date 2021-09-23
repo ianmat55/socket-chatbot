@@ -11,6 +11,14 @@ from rich.table import Table
 custom_theme = ux.theme
 console = Console(theme=custom_theme)
 
+# init log settings
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s:%(message)s')
+file_handler = logging.FileHandler('transcript.log', mode='w')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
 class Client:
 	def __init__(self, ip, port, nick=None):
 		self.con = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
@@ -26,7 +34,6 @@ class Client:
 		
 	# turned threading into a function because TDD principles?
 	def thread(self, func, params=None):
-		
 		if params == None:
 			conn = threading.Thread(target=func)
 			conn.start()
@@ -105,21 +112,12 @@ class Client:
 					console.print(msg.decode("UTF-8"), style='dark_purp')
 			
 			except Exception as e:
-				print(e)
+				logger.debug(e)
 				break
 
 	#print info
 	def get_constants(self, pref):
 		return dict((getattr(self.con,n), n) for n in dir(self.con) if n.startswith(pref))
-	
-	def set_logger(self, name, filename, level=logging.INFO):
-		# init log settings
-		logger = logging.getLogger(name)
-		logger.setLevel(level)
-		formatter = logging.Formatter('%(asctime)s:%(levelname)s%(message)s')
-		file_handler = logging.FileHandler(filename)
-		file_handler.setFormatter(formatter)
-		logger.addHandler(file_handler)
 
 	def __repr__(self):
 		
@@ -156,10 +154,12 @@ class Server(Client):
 		for client in self.users.keys(): # client objects stored as dictionary keys to username values
 			if client != client_sock: # don't want to send the message to original sender
 				client.send(msg.encode("UTF-8"))
+				logger.info(msg)
 	
 	def handle_client(self, client_sock, nick):
 		while True:
 			msg = client_sock.recv(2048).decode('UTF-8')
+			logger.info(msg)
 			self.broadcast(msg, client_sock)
 			console.print(msg, style='dark_purp')
 			if not msg:
@@ -208,7 +208,7 @@ class Server(Client):
 					key.shutdown(socket.SHUT_RDWR)
 					key.close()
 		except Exception as e:
-			print(e)
+			logger.debug(e)
 
 ##########################################################################################################
 
@@ -225,7 +225,7 @@ class Server(Client):
 					try:
 						self.read_file(filename)
 					except Exception as e:
-						print(e)
+						logger.debug(e)
 						continue
 				if msg.lower() == 'cls()':
 					self.clear()
@@ -238,7 +238,7 @@ class Server(Client):
 						name = input("User to send message: ")
 						self.bc(name)
 					except Exception as e:
-						print(e)
+						logger.debug(e)
 						continue
 				elif msg.lower() == "kick()":
 					user = input("Username to kick: ")
@@ -246,7 +246,7 @@ class Server(Client):
 				else:
 					self.broadcast(f"[SERVER] {msg}")
 			except Exception as e:
-				print(e)
+				logger.debug(e)
 				break
 
 	def start(self):
@@ -275,7 +275,7 @@ class Server(Client):
 
 			#Shutdown server of ctrl-c	
 			except Exception as e:
-				console.print(e, style='wine')
+				logger.debug(e)
 				console.print('[GOODBYE]', style='wine')
 				self.con.close()
 				os._exit(1)
