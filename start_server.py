@@ -13,5 +13,6 @@ def main():
 	server.start()
 
 if __name__ == '__main__':
+	Client.set_logger('info', 'logger.log')
 	main()
 

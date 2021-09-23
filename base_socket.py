@@ -11,13 +11,6 @@ from rich.table import Table
 custom_theme = ux.theme
 console = Console(theme=custom_theme)
 
-# init log settings
-logger = logging.getLogger('error_logger')
-formatter = logging.Formatter('%(asctime)s:%(levelname)s%(message)s')
-file_handler = logging.handlers.RotatingFileHandler('debug.log')
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
-
 class Client:
 	def __init__(self, ip, port, nick=None):
 		self.con = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
@@ -48,7 +41,7 @@ class Client:
 
 			self.con.connect((self.ip, self.port))
 			self.thread(self.recv_msg)
-			console.print(f"* Welcome {self.nick}", style='peach')
+			console.print(f"[*] Welcome {self.nick}", style='peach')
 		except:
 			console.print('Could not connect to server', style='wine')
 
@@ -118,6 +111,15 @@ class Client:
 	#print info
 	def get_constants(self, pref):
 		return dict((getattr(self.con,n), n) for n in dir(self.con) if n.startswith(pref))
+	
+	def set_logger(self, name, filename, level=logging.INFO):
+		# init log settings
+		logger = logging.getLogger(name)
+		logger.setLevel(level)
+		formatter = logging.Formatter('%(asctime)s:%(levelname)s%(message)s')
+		file_handler = logging.FileHandler(filename)
+		file_handler.setFormatter(formatter)
+		logger.addHandler(file_handler)
 
 	def __repr__(self):
 		
