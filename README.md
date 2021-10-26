@@ -1,6 +1,6 @@
 # socket-chatbot
 <p align='center'>
-![](images/chatty.png)
+<img src='https://github.com/ianmat55/socket-chatbot/blob/main/images/chatty.png'>
 </p>
 
 ## Description:
