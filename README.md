@@ -2,11 +2,9 @@
 <img src='https://github.com/ianmat55/socket-chatbot/blob/main/images/chatty.png'>
 </p>
 
-# socket-chatbot
-
-## Description:
 Chatty is a basic client(s)/server terminal app utilizing socket communication written with Python. Goal of this project is to learn basic socket communication, threading and explore the python socket library. Both server and client come with some basic functions that are executed when a specific message is entered into the terminal.
 
+## Commands 
 Server Functions:
 - kick(): kicks a specific user from chat
 - ls(): lists active connections
