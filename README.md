@@ -1,6 +1,7 @@
 <p align='center'>
 <img src='https://github.com/ianmat55/socket-chatbot/blob/main/images/chatty.png'>
 </p>
+
 # socket-chatbot
 
 ## Description:
