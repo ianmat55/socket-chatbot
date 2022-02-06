@@ -18,7 +18,7 @@ Both Client and Server:
 ## How to Run
 1. Fork or download github repo
 2. pip install 'rich'. Program coded with python v3.8.10
-3. cd to project directory and type 'python3 server_start.py' start server
+3. cd to project directory and type 'python3 start_server.py' start server
 4. enter 'local' to connect for localhost
 5. Type 'python3 server_client.py' start client. Can run multiple times for multiple clients
 6. enter 'local' to connect to server
